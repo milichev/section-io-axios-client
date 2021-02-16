@@ -1,9 +1,29 @@
 {
   "name": "section-io-axios-client",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "description": "OpenAPI client for Section.io",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "source": "src/index.ts",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/milichev/section-io-axios-client.git"
+  },
+  "keywords": [
+    "section",
+    "section.io",
+    "rest",
+    "api",
+    "openapi",
+    "swagger",
+    "axios"
+  ],
+  "author": {
+    "name": "Vadym Milichev",
+    "email": "vadim.milichev@gmail.com"
+  },
+  "contributors": [],
   "scripts": {
     "build": "tsc"
   },
