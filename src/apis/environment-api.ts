@@ -998,18 +998,18 @@ export const EnvironmentApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentConfiguration: async (accountId: number, applicationId: number, environmentName: string, options: any = {}): Promise<RequestArgs> => {
+        getConfiguration: async (accountId: number, applicationId: number, environmentName: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'accountId' is not null or undefined
             if (accountId === null || accountId === undefined) {
-                throw new RequiredError('accountId','Required parameter accountId was null or undefined when calling getEnvironmentConfiguration.');
+                throw new RequiredError('accountId','Required parameter accountId was null or undefined when calling getConfiguration.');
             }
             // verify required parameter 'applicationId' is not null or undefined
             if (applicationId === null || applicationId === undefined) {
-                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getEnvironmentConfiguration.');
+                throw new RequiredError('applicationId','Required parameter applicationId was null or undefined when calling getConfiguration.');
             }
             // verify required parameter 'environmentName' is not null or undefined
             if (environmentName === null || environmentName === undefined) {
-                throw new RequiredError('environmentName','Required parameter environmentName was null or undefined when calling getEnvironmentConfiguration.');
+                throw new RequiredError('environmentName','Required parameter environmentName was null or undefined when calling getConfiguration.');
             }
             const localVarPath = `/account/{accountId}/application/{applicationId}/environment/{environmentName}/configuration`
                 .replace(`{${"accountId"}}`, encodeURIComponent(String(accountId)))
@@ -1368,8 +1368,8 @@ export const EnvironmentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEnvironmentConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentConfiguration>> {
-            const localVarAxiosArgs = await EnvironmentApiAxiosParamCreator(configuration).getEnvironmentConfiguration(accountId, applicationId, environmentName, options);
+        async getConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EnvironmentConfiguration>> {
+            const localVarAxiosArgs = await EnvironmentApiAxiosParamCreator(configuration).getConfiguration(accountId, applicationId, environmentName, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -1578,8 +1578,8 @@ export const EnvironmentApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEnvironmentConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any): AxiosPromise<EnvironmentConfiguration> {
-            return EnvironmentApiFp(configuration).getEnvironmentConfiguration(accountId, applicationId, environmentName, options).then((request) => request(axios, basePath));
+        getConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any): AxiosPromise<EnvironmentConfiguration> {
+            return EnvironmentApiFp(configuration).getConfiguration(accountId, applicationId, environmentName, options).then((request) => request(axios, basePath));
         },
         /**
          * Patch configuration for the environment
@@ -1797,8 +1797,8 @@ export class EnvironmentApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof EnvironmentApi
      */
-    public getEnvironmentConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any) {
-        return EnvironmentApiFp(this.configuration).getEnvironmentConfiguration(accountId, applicationId, environmentName, options).then((request) => request(this.axios, this.basePath));
+    public getConfiguration(accountId: number, applicationId: number, environmentName: string, options?: any) {
+        return EnvironmentApiFp(this.configuration).getConfiguration(accountId, applicationId, environmentName, options).then((request) => request(this.axios, this.basePath));
     }
     /**
      * Patch configuration for the environment

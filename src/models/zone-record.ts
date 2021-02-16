@@ -37,7 +37,7 @@ export interface ZoneRecord {
     recordType?: any;
     /**
      * 
-     * @type {Array&lt;any&gt;}
+     * @type {Array}
      * @memberof ZoneRecord
      */
     recordData?: any;

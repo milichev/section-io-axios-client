@@ -10,10 +10,15 @@ This package implements [Axios](https://www.npmjs.com/package/axios)-based clien
 
 ## Installation
 
-Navigate to the folder of your consuming project and run the following command.
+Navigate to the folder of your consuming project and run the following command:
 
 ```
-yarn install section-io-axios-client
+npm install --save section-io-axios-client
+```
+or
+
+```
+yarn add section-io-axios-client
 ```
 
 ## Usage

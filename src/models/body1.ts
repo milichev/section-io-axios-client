@@ -43,7 +43,7 @@ export interface Body1 {
     ttl: any;
     /**
      * Record Data
-     * @type {Array&lt;any&gt;}
+     * @type {Array}
      * @memberof Body1
      */
     recordData: any;
