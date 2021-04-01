@@ -34,25 +34,25 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    firstName?: any;
+    first_name?: any;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    lastName?: any;
+    last_name?: any;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    companyName?: any;
+    company_name?: any;
     /**
      * 
      * @type {string}
      * @memberof User
      */
-    phoneNumber?: any;
+    phone_number?: any;
     /**
      * 
      * @type {boolean}

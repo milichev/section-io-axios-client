@@ -34,19 +34,19 @@ export interface AccountGraphApplications {
      * @type {string}
      * @memberof AccountGraphApplications
      */
-    applicationName?: any;
+    application_name?: any;
     /**
      * 
      * @type {string}
      * @memberof AccountGraphApplications
      */
-    pathPrefix?: any;
+    path_prefix?: any;
     /**
      * 
      * @type {Array&lt;string&gt;}
      * @memberof AccountGraphApplications
      */
-    pathPrefixes?: any;
+    path_prefixes?: any;
     /**
      * 
      * @type {Array&lt;AccountGraphEnvironments&gt;}

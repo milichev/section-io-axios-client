@@ -34,17 +34,17 @@ export interface Application {
      * @type {string}
      * @memberof Application
      */
-    applicationName?: any;
+    application_name?: any;
     /**
      * 
      * @type {string}
      * @memberof Application
      */
-    pathPrefix?: any;
+    path_prefix?: any;
     /**
      * 
      * @type {Array&lt;string&gt;}
      * @memberof Application
      */
-    pathPrefixes?: any;
+    path_prefixes?: any;
 }

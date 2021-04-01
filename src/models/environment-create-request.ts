@@ -28,11 +28,11 @@ export interface EnvironmentCreateRequest {
      * @type {string}
      * @memberof EnvironmentCreateRequest
      */
-    sourceEnvironmentName: any;
+    source_environment_name: any;
     /**
      * 
      * @type {string}
      * @memberof EnvironmentCreateRequest
      */
-    domainName: any;
+    domain_name: any;
 }

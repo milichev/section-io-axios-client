@@ -28,53 +28,53 @@ export interface BillingHistory {
      * @type {number}
      * @memberof BillingHistory
      */
-    totalCost?: any;
+    total_cost?: any;
     /**
      * Page views processed by Platform Routing Tier
      * @type {number}
      * @memberof BillingHistory
      */
-    viewBase?: any;
+    view_base?: any;
     /**
      * Page views processed by Varnish
      * @type {number}
      * @memberof BillingHistory
      */
-    viewVarnish?: any;
+    view_varnish?: any;
     /**
      * Page views processed by ModSecurity
      * @type {number}
      * @memberof BillingHistory
      */
-    viewModsecurity?: any;
+    view_modsecurity?: any;
     /**
      * Gigabytes processed through Australia
      * @type {number}
      * @memberof BillingHistory
      */
-    dataAu?: any;
+    data_au?: any;
     /**
      * Gigabytes processed through North America
      * @type {number}
      * @memberof BillingHistory
      */
-    dataUs?: any;
+    data_us?: any;
     /**
      * Gigabytes processed through Europe
      * @type {number}
      * @memberof BillingHistory
      */
-    dataEu?: any;
+    data_eu?: any;
     /**
      * Gigabytes processed by Varnish
      * @type {number}
      * @memberof BillingHistory
      */
-    dataVarnish?: any;
+    data_varnish?: any;
     /**
      * Gigabytes processed by ModSecurity
      * @type {number}
      * @memberof BillingHistory
      */
-    dataModsecurity?: any;
+    data_modsecurity?: any;
 }

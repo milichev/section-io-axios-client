@@ -34,7 +34,7 @@ export interface CreateAccountResponse {
      * @type {string}
      * @memberof CreateAccountResponse
      */
-    accountName?: any;
+    account_name?: any;
     /**
      * 
      * @type {Array&lt;CreateAccountResponseApplications&gt;}

@@ -40,31 +40,31 @@ export interface BillingSummary {
      * @type {string}
      * @memberof BillingSummary
      */
-    meterType?: any;
+    meter_type?: any;
     /**
      * Account balance for period
      * @type {number}
      * @memberof BillingSummary
      */
-    outstandingBalance?: any;
+    outstanding_balance?: any;
     /**
      * Next billing period starts
      * @type {string}
      * @memberof BillingSummary
      */
-    periodNext?: any;
+    period_next?: any;
     /**
      * Billing period started
      * @type {string}
      * @memberof BillingSummary
      */
-    periodStarted?: any;
+    period_started?: any;
     /**
      * Billing portal URL
      * @type {string}
      * @memberof BillingSummary
      */
-    billingPortal?: any;
+    billing_portal?: any;
     /**
      * Account status
      * @type {string}

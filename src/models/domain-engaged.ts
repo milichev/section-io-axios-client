@@ -22,7 +22,7 @@ export interface DomainEngaged {
      * @type {boolean}
      * @memberof DomainEngaged
      */
-    isEngaged?: any;
+    is_engaged?: any;
     /**
      * 
      * @type {any}

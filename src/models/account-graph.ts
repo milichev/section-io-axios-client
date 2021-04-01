@@ -34,7 +34,7 @@ export interface AccountGraph {
      * @type {string}
      * @memberof AccountGraph
      */
-    accountName?: any;
+    account_name?: any;
     /**
      * 
      * @type {Array&lt;AccountGraphApplications&gt;}

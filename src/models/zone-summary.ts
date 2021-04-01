@@ -22,11 +22,11 @@ export interface ZoneSummary {
      * @type {string}
      * @memberof ZoneSummary
      */
-    zoneName?: any;
+    zone_name?: any;
     /**
      * 
      * @type {Array&lt;string&gt;}
      * @memberof ZoneSummary
      */
-    nameServers?: any;
+    name_servers?: any;
 }

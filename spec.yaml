@@ -1,0 +1,2516 @@
+# this is an example of the Section API
+swagger: '2.0'
+info:
+  title: Section API
+  description: Get edgey with the Section API
+  version: "1.0.0"
+# the domain of the service
+host: aperture.section.io
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+  - application/tar+gzip
+
+################################################################################
+#                                  Security                                    #
+################################################################################
+securityDefinitions:
+  basic:
+    type: basic
+  keyInQuery:
+    type: apiKey
+    in: query
+    name: access_token
+security:
+  - basic: []
+  - keyInQuery: []
+
+################################################################################
+#                                   Parameters                                 #
+################################################################################
+parameters:
+  accountId:
+    name: accountId
+    in: path
+    description: The account identifier number
+    required: true
+    type: 'integer'
+    format: 'int64'
+  applicationId:
+    name: applicationId
+    in: path
+    description: The application identifier number
+    required: true
+    type: 'integer'
+    format: 'int64'
+  userId:
+    name: userId
+    in: path
+    description: The user identifier number
+    required: true
+    type: 'integer'
+    format: 'int64'
+  environmentName:
+    name: environmentName
+    in: path
+    description: The name of the environment
+    required: true
+    type: 'string'
+  helpId:
+    name: helpId
+    in: path
+    description: Identifier for contextual help
+    required: true
+    type: 'string'
+  proxyName:
+    name: proxyName
+    in: path
+    description: The proxy identifier
+    required: true
+    type: 'string'
+  hostName:
+    name: hostName
+    in: path
+    description: Host Name
+    required: true
+    type: 'string'
+  proxyTemplateName:
+    name: proxyTemplateName
+    in: query
+    description: Proxy template identifier
+    required: true
+    type: 'string'
+
+################################################################################
+#                                    Paths                                     #
+################################################################################
+paths:
+  /account:
+    x-swagger-router-controller: AccountApiController
+    get:
+      operationId: accountList
+      tags:
+        - Account
+      description: Get the list of accounts.
+      responses:
+        200:
+          description: Available accounts
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Account'
+
+  /account/graph:
+    x-swagger-router-controller: AccountApiController
+    get:
+      operationId: accountGraph
+      tags:
+        - Account
+      description: Gets a graph of accounts/applications & environments
+      responses:
+        200:
+          description: Available accounts
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountGraph'
+
+  /account/create:
+    x-swagger-router-controller: AccountApiController
+    post:
+      operationId: accountCreate
+      parameters:
+        - name: "body"
+          in: "body"
+          description: 'Account create'
+          required: true
+          schema:
+            $ref: '#/definitions/AccountCreateRequest'
+      tags:
+        - Account
+      description: Create a new account and application for the current user
+      responses:
+        200:
+          description: The response object
+          schema:
+            $ref: '#/definitions/CreateAccountResponse'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+
+  /account/{accountId}:
+    x-swagger-router-controller: AccountApiController
+    get:
+      operationId: accountGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Account
+      description: Get basic information about an account.
+      responses:
+        200:
+          description: The account object
+          schema:
+            $ref: '#/definitions/Account'
+
+  /account/{accountId}/domains:
+    x-swagger-router-controller: AccountApiController
+    x-swagger-section-capabilities: ['admin','state']
+    x-swagger-section-2fa-bypass-permitted: true
+    get:
+      operationId: accountDomainList
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - in: query
+          name: engaged
+          type: boolean
+          required: false
+          description: The flag to return engaged or disengaged domains.
+      tags:
+        - Account
+      description: Get list of account's domains.
+      responses:
+        200:
+          description: The domain list
+          schema:
+            $ref: '#/definitions/DomainList'
+
+  /account/{accountId}/user:
+    x-swagger-router-controller: UserApiController
+    x-swagger-section-capabilities: ['admin']
+    get:
+      operationId: accountUserList
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Application
+        - User
+      description: Gets list of users with permissions to account
+      responses:
+        200:
+          description: List of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AccountUser'
+    post:
+      operationId: accountUserInvitePost
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - name: "body"
+          in: "body"
+          description: 'Invite user to account'
+          required: true
+          schema:
+            $ref: '#/definitions/AccountUserInviteRequest'
+      tags:
+        - User
+      description: Invite user to account
+      responses:
+        200:
+          description: Action response
+          schema:
+            $ref: '#/definitions/AccountUserActionResult'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/user/{userId}:
+    x-swagger-router-controller: UserApiController
+    get:
+      operationId: accountUserGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/userId'
+      tags:
+        - Application
+        - User
+      description: Gets list of users with permissions to account
+      responses:
+        200:
+          description: List of users
+          schema:
+            $ref: '#/definitions/AccountUser'
+    delete:
+      operationId: accountUserRemove
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/userId'
+      tags:
+        - User
+      description: Invite user to account
+      responses:
+        200:
+          description: Action response
+          schema:
+            $ref: '#/definitions/AccountUserActionResult'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      operationId: accountUserUpdate
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/userId'
+        - name: "body"
+          in: "body"
+          description: 'Updates the accountCapability for a specific user within a specific account'
+          required: true
+          schema:
+            $ref: '#/definitions/AccountUserUpdateParams'
+      tags:
+        - User
+        - Account
+      description: Update Account User for permissions changes
+      responses:
+        200:
+          description: Action response
+          schema:
+            $ref: '#/definitions/AccountUserUpdateResult'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /user:
+    x-swagger-router-controller: UserApiController
+    get:
+      operationId: currentUserGet
+      tags:
+        - User
+      description: Get current user details
+      responses:
+        200:
+          description: The user object
+          schema:
+            $ref: '#/definitions/User'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      operationId: currentUserPost
+      tags:
+        - User
+      description: Update current user details
+      parameters:
+        - name: "body"
+          in: "body"
+          description: User details
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: The user object
+          schema:
+            $ref: '#/definitions/User'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /user/totp:
+    x-swagger-router-controller: UserApiController
+    post:
+      operationId: currentUserTotpPost
+      tags:
+        - User
+      description: Generate and return a new 2FA (TOTP) token
+      responses:
+        200:
+          description: The TOTP token
+          schema:
+            $ref: '#/definitions/Totp'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /user/resendverification:
+    x-swagger-router-controller: UserApiController
+    post:
+      operationId: currentUserVerificationPost
+      tags:
+        - User
+      description: Resend email verification
+      responses:
+        200:
+          description: Request result
+          schema:
+            $ref: '#/definitions/UserResendVerificationResult'
+        404:
+          description: User not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /user/linkexternal:
+    x-swagger-router-controller: UserApiController
+    post:
+      operationId: linkExternal
+      parameters:
+        - name: "body"
+          in: "body"
+          description: 'Account create'
+          required: true
+          schema:
+            type: object
+            required:
+              - payload
+            additionalProperties: false
+            properties:
+              payload:
+                type: string
+      description: Associate your user account with an external IDP
+      responses:
+        204:
+          description: Association complete
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /user/{userId}/cache:
+    x-swagger-router-controller: UserApiController
+    post:
+      operationId: cacheClear
+      parameters:
+        - $ref: '#/parameters/userId'
+      description: Clear internal cache for user
+      responses:
+        200:
+          description: Update complete
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/billingsummary:
+    x-swagger-router-controller: BillingApiController
+    get:
+      operationId: accountBillingGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Account
+        - Billing
+      description: Get basic billing information for account.
+      responses:
+        200:
+          description: The account object
+          schema:
+            $ref: '#/definitions/BillingSummary'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/billinghistory:
+    x-swagger-router-controller: BillingApiController
+    get:
+      operationId: accountBillingHistoryGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Account
+        - Billing
+      description: Get billing history
+      responses:
+        200:
+          description: The account history object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BillingHistory'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/:
+    x-swagger-router-controller: ApplicationApiController
+    get:
+      operationId: applicationList
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Application
+      description: Get the account's applications.
+      responses:
+        200:
+          description: The account's applications
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ApplicationSummary'
+
+  /account/{accountId}/application/create:
+    x-swagger-router-controller: ApplicationApiController
+    post:
+      operationId: applicationCreate
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - name: "body"
+          in: "body"
+          description: 'Application Create Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationCreateRequest'
+      tags:
+        - Application
+      description: Create a new application for the account
+      responses:
+        200:
+          description: The response object
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+
+  /account/{accountId}/application/{applicationId}:
+    x-swagger-router-controller: ApplicationApiController
+    get:
+      operationId: applicationGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+      tags:
+        - Application
+      description: Get basic information about an application.
+      responses:
+        200:
+          description: The application object
+          schema:
+            $ref: '#/definitions/Application'
+    delete:
+      operationId: applicationDelete
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+      tags:
+        - Application
+      responses:
+        204:
+          description: Sucessful application delete
+        400:
+          description: Malformed request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        404:
+          description: Application not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        403:
+          description: Admin privileges are required
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Error occurred during deletion
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/split:
+    x-swagger-router-controller: ApplicationApiController
+    x-swagger-section-capabilities: ['admin']
+    post:
+      operationId: applicationSplit
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - name: body
+          in: body
+          description: 'Application Split Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationSplitRequest'
+      tags:
+        - Application
+      description: Split the url space of an existing application into a new application.
+      responses:
+        200:
+          description: The new application object
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+
+  /account/{accountId}/application/{applicationId}/clone:
+    x-swagger-router-controller: ApplicationApiController
+    x-swagger-section-capabilities: ['admin']
+    post:
+      operationId: applicationClone
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - name: body
+          in: body
+          description: 'Application Clone Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationCloneRequest'
+      tags:
+        - Application
+      description: Clone the configuration of an existing application into a new application.
+      responses:
+        200:
+          description: The new application object
+          schema:
+            $ref: '#/definitions/Application'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+
+  /account/{accountId}/application/{applicationId}/state:
+    x-swagger-router-controller: ApplicationStateApiController
+    post:
+      operationId: applicationStatePost
+      deprecated: true
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - name: "body"
+          in: "body"
+          description: 'State update description'
+          required: true
+          schema:
+            $ref: '#/definitions/ApplicationStateUpdateRequest'
+      tags:
+        - Application
+      description: Apply a cache ban to the default hosted environment for this application.  Deprecated, please use the proxy state method
+      responses:
+        200:
+          description: The application object
+          schema:
+            $ref: '#/definitions/ApplicationStateUpdateResult'
+
+  /account/{accountId}/application/{applicationId}/verifyEngaged:
+    x-swagger-router-controller: ApplicationApiController
+    get:
+      operationId: applicationVerifyEngaged
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+      tags:
+        - Application
+      description: Checks if any environment for this application is configured to route through Section
+      responses:
+        200:
+          description: Returns true any environment for this application is configured to route through Section
+          schema:
+            $ref: '#/definitions/DomainEngaged'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/stack:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentStackGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Get the proxy stack list for an environment
+      responses:
+        200:
+          description: Returns an array of proxies for this environment's stack
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Proxy'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/ipRestrictions:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentIpRestrictionsGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Returns the list of IP addresses and CIDR blocks that are restricted from accessing this environment
+      responses:
+        200:
+          description: List of IP addresses and CIDR blocks that are restricted from accessing this environment
+          schema:
+            $ref: '#/definitions/IpRestrictions'
+    post:
+      operationId: environmentIpRestrictionsPost
+      x-swagger-section-capabilities: ['admin','restrictions-editor']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - name: "body"
+          in: "body"
+          description: 'IP restrictions list'
+          required: true
+          schema:
+            $ref: '#/definitions/IpRestrictions'
+      tags:
+        - Environment
+      description: Update the list of IP addresses and CIDR blocks that are restricted from accessing this environment
+      responses:
+        200:
+          description: List of IP addresses and CIDR blocks that are restricted from accessing this environment
+          schema:
+            $ref: '#/definitions/IpRestrictions'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/outagepage:
+    x-swagger-router-controller: OutagePageApiController
+    get:
+      operationId: outagePageGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - OutagePage
+      description: Lists the available outage pages
+      responses:
+        200:
+          description: Available outage pages
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OutagePage'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      operationId: outagePagePost
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - in: query
+          name: pageName
+          description: Name of the outage page to engage
+          required: true
+          type: 'string'
+      tags:
+        - OutagePage
+      description: Engage the specified outage page
+      responses:
+        204:
+          description: Outage page is engaged
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    delete:
+      operationId: outagePageDelete
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - OutagePage
+      description: Disengage the outage page for the specified environment
+      responses:
+        204:
+          description: Outage page is disengaged
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/verifyEngaged:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentVerifyEngaged
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Checks if this environment is configured to route through Section
+      responses:
+        200:
+          description: Returns true if the environment is configured to route through Section
+          schema:
+            $ref: '#/definitions/EnvironmentEngaged'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/engaged:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentFetchEngaged
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Returns the last known state of whether this environment is configured to route through Section without re-checking.
+      responses:
+        200:
+          description: Returns true if the environment is configured to route through Section
+          schema:
+            $ref: '#/definitions/EnvironmentEngaged'
+
+  /stack:
+    x-swagger-router-controller: StackApiController
+    get:
+      operationId: stackList
+      tags:
+        - Application
+      description: Returns an array of stacks
+      responses:
+        200:
+          description: Available stacks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Stack'
+
+  /proxytemplate:
+    x-swagger-router-controller: ProxyTemplateApiController
+    get:
+      operationId: proxyTemplateList
+      tags:
+        - Application
+      description: Returns an array of proxy templates that can be included in a proxy stack
+      responses:
+        200:
+          description: Available proxy templates
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProxyTemplate'
+
+  /proxytemplate/initialstate:
+    x-swagger-router-controller: ProxyTemplateApiController
+    get:
+      operationId: proxyTemplateInitialState
+      parameters:
+        - $ref: '#/parameters/proxyTemplateName'
+      tags:
+        - Application
+      description: Returns a tar.gz containing the inital state of the proxy repository
+      responses:
+        200:
+          description: Returns the tar.gz
+          schema:
+            type: file
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /help/{helpId}:
+    x-swagger-router-controller: HelpApiController
+    get:
+      operationId: helpGet
+      parameters:
+        - $ref: '#/parameters/helpId'
+      tags:
+        - Help
+      description: Gets contextual help content by identifier
+      responses:
+        200:
+          description: Content of the contextual help item
+          schema:
+            $ref: '#/definitions/HelpContent'
+
+  /account/{accountId}/zone/{zoneName}:
+    x-swagger-router-controller: ZoneApiController
+    get:
+      operationId: getZoneDetail
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - in: path
+          name: zoneName
+          description: Zone Name
+          required: true
+          type: 'string'
+      tags:
+        - Zone
+      description: Get details of a zone
+      responses:
+        200:
+          description: Zone details
+          schema:
+            $ref: '#/definitions/ZoneDetail'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    post:
+      x-swagger-section-capabilities: ['admin']
+      operationId: postZoneRecord
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - in: path
+          name: zoneName
+          description: Zone Name
+          required: true
+          type: 'string'
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - recordName
+              - recordType
+              - ttl
+              - recordData
+            properties:
+              recordName:
+                description: Record Name
+                type: string
+              recordType:
+                description: Record Type
+                type: string
+              originalRecordType:
+                description: Original Record Type
+                type: string
+              ttl:
+                description: Time to live (seconds)
+                type: integer
+                format: int32
+              recordData:
+                description: Record Data
+                type: array
+                items:
+                  type:
+                    - string
+                    - object
+      tags:
+        - Zone
+      description: Add or update a record for a zone
+      responses:
+        200:
+          description: Updated zone details
+          schema:
+            $ref: '#/definitions/ZoneDetail'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/zone/{zoneName}/{recordName}/{recordType}:
+    x-swagger-router-controller: ZoneApiController
+    delete:
+      x-swagger-section-capabilities: ['admin']
+      operationId: deleteZoneRecord
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - in: path
+          name: zoneName
+          description: Zone Name
+          required: true
+          type: 'string'
+        - in: path
+          name: recordName
+          description: Record Name
+          required: true
+          type: 'string'
+        - in: path
+          name: recordType
+          description: Record Type
+          required: true
+          type: 'string'
+      tags:
+        - Zone
+      description: Delete a record from a zone
+      responses:
+        200:
+          description: Updated zone details
+          schema:
+            $ref: '#/definitions/ZoneDetail'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/zone:
+    x-swagger-router-controller: ZoneApiController
+    get:
+      operationId: getZones
+      parameters:
+        - $ref: '#/parameters/accountId'
+      tags:
+        - Zone
+      description: List all zones for account
+      responses:
+        200:
+          description: Zone result
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ZoneSummary'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/domain/{hostName}/zone:
+    x-swagger-router-controller: ZoneApiController
+    get:
+      operationId: getDomainZone
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/hostName'
+      tags:
+        - Zone
+      description: Find likely zone for domain
+      responses:
+        200:
+          description: Zone result
+          schema:
+            $ref: '#/definitions/ZoneCandidate'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/domain/{hostName}/renewCertificate:
+    x-swagger-router-controller: CertificateApiController
+    x-swagger-section-2fa-bypass-permitted: true
+    post:
+      x-swagger-section-capabilities: ['admin']
+      operationId: renewCertificate
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/hostName'
+      tags:
+        - Domain
+      description: Renew certificate
+      responses:
+        200:
+          description: Certificate configuration
+          schema:
+            type: object
+
+  /account/{accountId}/domain/{hostName}/https:
+    x-swagger-router-controller: CertificateApiController
+    x-swagger-section-2fa-bypass-permitted: true
+    get:
+      operationId: getConfiguration
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/hostName'
+      tags:
+        - Domain
+      description: Get https configuration
+      responses:
+        200:
+          description: The newly created environment
+          schema:
+            $ref: '#/definitions/HttpsConfiguration'
+    post:
+      x-swagger-section-capabilities: ['admin']
+      operationId: postConfiguration
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/hostName'
+        - name: "body"
+          in: "body"
+          description: 'Https Set Configuration Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/HttpsSetConfiguration'
+      tags:
+        - Domain
+      description: Set https configuration
+      responses:
+        200:
+          description: Certificate configuration
+          schema:
+            $ref: '#/definitions/HttpsConfiguration'
+        400:
+          description: Malformed request
+          schema:
+            $ref: '#/definitions/MultiErrorModel'
+
+  /account/{accountId}/domain/{hostName}/verifyEngaged:
+    x-swagger-router-controller: DomainApiController
+    x-swagger-section-2fa-bypass-permitted: true
+    get:
+      operationId: verifyEngaged
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/hostName'
+      tags:
+        - Domain
+      description: Checks if domain is configured to route traffic
+      responses:
+        200:
+          description: Returns true any environment for this application is configured to route through Section
+          schema:
+            $ref: '#/definitions/DomainEngaged'
+        404:
+          description: Domain not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error - see message for details
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/domain/{hostName}:
+    x-swagger-router-controller: EnvironmentApiController
+    x-swagger-section-capabilities: ['admin']
+    x-swagger-section-2fa-bypass-permitted: true
+    post:
+      operationId: environmentAddDomain
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/hostName'
+        - name: "body"
+          in: "body"
+          description: 'Certificate payload'
+          required: false
+          schema:
+            type: object
+            properties:
+              public_certificates:
+                type: string
+              private_key:
+                type: string
+                x-swagger-section-sensitive: true
+      tags:
+        - Environment
+        - Domain
+      description: Add a domain to an environment. If there is no certificate passed in the body, a Let's Encrypt certificate will be generated for this domain
+      responses:
+        200:
+          description: Environment Summary
+          schema:
+            $ref: '#/definitions/EnvironmentSummary'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    delete:
+      operationId: environmentRemoveDomain
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/hostName'
+      tags:
+        - Environment
+        - Domain
+      description: Remove a domain from an environment. Will also remove any certificate linked to the domain
+      responses:
+        200:
+          description: Environment Summary
+          schema:
+            $ref: '#/definitions/EnvironmentSummary'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/enableHostedDNS:
+    x-swagger-router-controller: ZoneApiController
+    x-swagger-section-capabilities: ['admin']
+    post:
+      operationId: enableHostedDNS
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            required:
+              - zoneName
+            properties:
+              zoneName:
+                description: Zone Name
+                type: 'string'
+              hostname:
+                description: Hostname
+                type: 'string'
+      tags:
+        - Environment
+        - Zone
+      description: Enable Section Hosted DNS for the environment's domain
+      responses:
+        200:
+          description: Zone result
+          schema:
+            $ref: '#/definitions/ZoneSummary'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/configuration:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: getConfiguration
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Get configuration for the environment
+      responses:
+        200:
+          description: Environment configuration
+          schema:
+            $ref: '#/definitions/EnvironmentConfiguration'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    patch:
+      operationId: patchConfiguration
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - in: body
+          name: body
+          required: true
+          schema:
+              $ref: "#/definitions/PatchRequest"
+      tags:
+        - Environment
+      description: Patch configuration for the environment
+      responses:
+        200:
+          description: Patch result
+          schema:
+            $ref: '#/definitions/EnvironmentConfiguration'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/update:
+    x-swagger-router-controller: EnvironmentApiController
+    patch:
+      operationId: patchFile
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - name: body
+          in: body
+          required: true
+          schema:
+              $ref: "#/definitions/PatchRequest"
+        - name: filepath
+          in: header
+          description: the path to the file you want to modify. Case-sensitive.
+          required: true
+          type: string
+      tags:
+        - Proxy
+      description: Patch the proxy with a JSON Patch. See - RFC6902 https://tools.ietf.org/html/rfc6902 - http://jsonpatch.com/
+      responses:
+        200:
+          description: Patch result
+          schema:
+            type: object
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        default:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /origin:
+    x-swagger-router-controller: OriginApiController
+    get:
+      operationId: resolveGet
+      parameters:
+        - in: query
+          name: hostName
+          description: Host Name
+          required: true
+          type: 'string'
+      tags:
+        - Application
+      description: Gets origin endpoint from hostname
+      responses:
+        200:
+          description: Resolved origin endpoint
+          schema:
+            $ref: '#/definitions/Origin'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Resolved origin endpoint
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentList
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+      tags:
+        - Environment
+      description: Get the application's environments.
+      responses:
+        200:
+          description: The application's environments
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EnvironmentSummary'
+
+  ## This route must be defined before "account/{accountId}/application/{applicationId}/environment/{environmentName}" to avoid conflicts
+  /account/{accountId}/application/{applicationId}/environment/create:
+    x-swagger-router-controller: EnvironmentApiController
+    post:
+      operationId: environmentCreate
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - name: "body"
+          in: "body"
+          description: 'Environment Create Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/EnvironmentCreateRequest'
+      tags:
+        - Environment
+      description: Create an application environment.
+      responses:
+        200:
+          description: The newly created environment
+          schema:
+            $ref: '#/definitions/EnvironmentSummary'
+        400:
+          description: Malformed request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: environmentGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Get the environment.
+      responses:
+        200:
+          description: The environment
+          schema:
+            $ref: '#/definitions/EnvironmentSummary'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/egress:
+    x-swagger-router-controller: EnvironmentApiController
+    get:
+      operationId: egressGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Get the environment's egress configuration.
+      responses:
+        200:
+          description: The environment's egress configuration
+          schema:
+            $ref: '#/definitions/Egress'
+    post:
+      operationId: egressPost
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - name: "body"
+          in: "body"
+          description: 'Environment Egress Payload'
+          required: true
+          schema:
+            $ref: '#/definitions/Egress'
+      tags:
+        - Environment
+      description: Get the environment's egress configuration.
+      responses:
+        200:
+          description: The environment's egress configuration
+          schema:
+            $ref: '#/definitions/Egress'
+        400:
+          description: Invalid parameters
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        500:
+          description: Server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/proxy/{proxyName}/configuration:
+    x-swagger-router-controller: ProxyApiController
+    get:
+      operationId: configurationGet
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/proxyName'
+      tags:
+        - Proxy
+      description: Get the proxy's configuration.
+      responses:
+        200:
+          description: The proxy's configuration
+          schema:
+              $ref: '#/definitions/ProxyConfiguration'
+    post:
+      operationId: configurationPost
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/proxyName'
+        - name: "body"
+          in: "body"
+          description: 'Proxy configuration update details'
+          required: true
+          schema:
+            $ref: '#/definitions/ProxyConfiguration'
+      tags:
+        - Proxy
+      description: Set the proxy's configuration.
+      responses:
+        200:
+          description: The proxy's configuration
+          schema:
+              $ref: '#/definitions/ErrorModel'
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/proxy/{proxyName}/state:
+    x-swagger-router-controller: ProxyApiController
+    x-swagger-section-2fa-bypass-permitted: true
+    x-swagger-section-capabilities: ['admin','state']
+    post:
+      operationId: proxyStatePost
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/proxyName'
+        - name: banExpression
+          in: query
+          required: false
+          type: string
+          description: The varnish ban expression to apply
+          default: req.url ~ /
+        - name: async
+          in: query
+          required: false
+          type: boolean
+          description: If true the call will return immediately, not waiting for all delivery nodes to complete the ban
+          default: false
+      tags:
+        - Proxy
+      description: Applies a varnish ban expression to the specified proxy
+      responses:
+        204:
+          description: Ban was applied successfully
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/proxy/{proxyName}/{operationName}:
+    x-swagger-router-controller: ProxyApiController
+    x-swagger-section-capabilities: ['admin','state']
+    x-swagger-section-2fa-bypass-permitted: true
+    post:
+      operationId: proxyOperationAction
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - $ref: '#/parameters/proxyName'
+        - name: operationName
+          in: path
+          required: true
+          type: string
+        - name: operationParameter
+          in: query
+          required: false
+          type: string
+          description: Parmeter to send with the message to a proxy
+      tags:
+        - Proxy
+      description: Send a message to a specified proxy
+      responses:
+        200:
+          description: Message was sent successfully
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/MultiErrorModel"
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/synthetics:
+    x-swagger-router-controller: SyntheticTestApiController
+    get:
+      operationId: getTests
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Synthetics
+      description: Return all synthetics tests for an environment
+      responses:
+        200:
+          description: All synthetics for this environment
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SyntheticTest'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/MultiErrorModel"
+    post:
+      operationId: addTest
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - name: "body"
+          in: "body"
+          description: Test to add
+          required: true
+          schema:
+            $ref: '#/definitions/SyntheticTest'
+      tags:
+        - Synthetics
+      description: Add a synthetics test
+      responses:
+        200:
+          description: All synthetics for this environment
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SyntheticTest'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/MultiErrorModel"
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/synthetics/{testId}:
+    x-swagger-router-controller: SyntheticTestApiController
+    delete:
+      operationId: deleteTest
+      x-swagger-section-capabilities: ['admin']
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+        - name: testId
+          in: path
+          description: ID of the test to delete
+          required: true
+          type: integer
+          format: 'int64'
+      tags:
+        - Synthetics
+      description: Deletes a synthetics test
+      responses:
+        200:
+          description: All synthetics for this environment
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SyntheticTest'
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/MultiErrorModel"
+
+  /account/{accountId}/application/{applicationId}/environment/{environmentName}/dnsbypass:
+    x-swagger-router-controller: EnvironmentApiController
+    x-swagger-section-capabilities: ['admin']
+    post:
+      operationId: environmentDnsBypassPost
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Request the bypassing of Section for this environment. All traffic will be directed to the environment's origin address.
+      responses:
+        200:
+          description: DNS Bypass was successfully requested
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+    delete:
+      operationId: environmentDnsBypassDelete
+      parameters:
+        - $ref: '#/parameters/accountId'
+        - $ref: '#/parameters/applicationId'
+        - $ref: '#/parameters/environmentName'
+      tags:
+        - Environment
+      description: Remove the bypass of Section for this environment. All traffic will be directed to Section's servers.
+      responses:
+        200:
+          description: DNS Bypass was successfully removed
+        default:
+          description: Error result
+          schema:
+            $ref: "#/definitions/ErrorModel"
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  ErrorModel:
+    type: object
+    properties:
+      message:
+        type: string
+
+  MultiErrorModel:
+    type: object
+    properties:
+      messages:
+        type: array
+        items:
+          type: string
+
+  Account:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      account_name:
+        type: string
+        description: 'user defined account name'
+      is_admin:
+        type: boolean
+        description: 'does authenticated account have access to account'
+      billing_user:
+        type: integer
+        description: 'owner user id'
+      requires_2fa:
+        type: boolean
+        description: All users on this account must log in with 2FA
+      owner:
+        $ref: '#/definitions/User'
+        #description: 'ownering user'
+
+  DomainList:
+    type: array
+    items:
+      type: object
+      properties:
+        domain_name:
+          type: string
+        engaged:
+          type: boolean
+
+
+  CreateAccountResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      account_name:
+        type: string
+      applications:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            href:
+              type: string
+            application_name:
+              type: string
+
+  ApplicationSummary:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      application_name:
+        type: string
+
+  AccountGraph:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      account_name:
+        type: string
+      applications:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            href:
+              type: string
+            application_name:
+              type: string
+            path_prefix:
+              type: string
+            path_prefixes:
+              type: array
+              items:
+                type: string
+            environments:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  environment_name:
+                    type: string
+
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      company_name:
+        type: string
+      phone_number:
+        type: string
+      verified:
+        type: boolean
+      requires2fa:
+        type: boolean
+      enforce2fa:
+        type: boolean
+
+  AccountUser:
+    type: object
+    properties:
+      id:
+        type: integer
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      phone_number:
+        type: string
+      accountCapability:
+        type: string
+
+  Stack:
+    type: object
+    properties:
+      name:
+        type: string
+      label:
+        type: string
+      description:
+        type: string
+
+  ProxyTemplate:
+    type: object
+    properties:
+      name:
+        type: string
+      label:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      initialStateUri:
+        type: string
+
+  Application:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      application_name:
+        type: string
+      path_prefix:
+        type: string
+      path_prefixes:
+        type: array
+        items:
+          type: string
+
+  ApplicationStateUpdateRequest:
+    type: object
+    required:
+      - proxy
+    minProperties: 2
+    maxProperties: 2
+    additionalProperties: false
+    properties:
+      proxy:
+        type: string
+        default: varnish
+        enum:
+          - varnish
+      ban:
+        type: string
+        default: req.url ~ /
+
+  ApplicationStateUpdateResult:
+    type: object
+    properties:
+      success:
+        type: boolean
+      description:
+        type: string
+
+  AccountCreateRequest:
+    type: object
+    required:
+      - name
+      - hostname
+    minProperties: 2
+    maxProperties: 4
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+      hostname:
+        type: string
+      origin:
+        type: string
+      stackName:
+        type: string
+        default: varnish-5.1-basic
+
+  ApplicationCreateRequest:
+    type: object
+    required:
+      - hostname
+    minProperties: 2
+    maxProperties: 3
+    additionalProperties: false
+    properties:
+      hostname:
+        type: string
+      origin:
+        type: string
+      stackName:
+        type: string
+        default: varnish-5.1-basic
+
+  ApplicationSplitRequest:
+    type: object
+    required:
+      - pathPrefix
+    minProperties: 1
+    maxProperties: 1
+    additionalProperties: false
+    properties:
+      pathPrefix:
+        type: string
+
+  ApplicationCloneRequest:
+    type: object
+    required:
+      - hostname
+    minProperties: 1
+    maxProperties: 2
+    additionalProperties: false
+    properties:
+      hostname:
+        type: string
+      origin:
+        type: string
+
+  DomainEngaged:
+    type: object
+    properties:
+      is_engaged:
+        type: boolean
+      hostnames:
+        type: object
+
+  EnvironmentCreateRequest:
+    type: object
+    required:
+      - name
+      - domain_name
+      - source_environment_name
+    minProperties: 3
+    maxProperties: 4
+    additionalProperties: false
+    properties:
+      name:
+        type: string
+        pattern: ^[A-Za-z][A-Za-z0-9]*$
+      source_environment_name:
+        type: string
+        pattern: ^[A-Za-z0-9]+$
+      domain_name:
+        type: string
+
+  Proxy:
+    type: object
+    required:
+      - href
+      - name
+      - image
+      - proxyType
+    properties:
+      href:
+        type: string
+      name:
+        type: string
+      image:
+        type: string
+      proxyType:
+        $ref: '#/definitions/ProxyType'
+
+  HttpsConfiguration:
+    type: object
+    properties:
+      type:
+        type: string
+      configured:
+        type: boolean
+      common_name:
+        type: string
+      alternate_names:
+        type: array
+        items:
+          type: string
+      issuer:
+        type: string
+      expires:
+        type: string
+      certificates:
+        type: array
+        items:
+          type: string
+      hpkp_fingerprint:
+        type: string
+      hostname_valid:
+        type: boolean
+
+  HttpsSetConfiguration:
+    type: object
+    properties:
+      type:
+        type: string
+      verify_only:
+        type: boolean
+      public_certificates:
+        type: string
+      private_key:
+        type: string
+        x-swagger-section-sensitive: true
+
+  ProxyType:
+    type: object
+    required:
+      - name
+      - prefix
+    properties:
+      name:
+        type: string
+      prefix:
+        type: string
+
+  HelpContent:
+    type: object
+    required:
+      - title
+      - content
+    properties:
+      title:
+        type: string
+      content:
+        type: string
+
+  EnvironmentSummary:
+    type: object
+    properties:
+      id:
+        type: integer
+      href:
+        type: string
+      environment_name:
+        type: string
+      domains:
+        type: array
+        items:
+          $ref: '#/definitions/DomainSummary'
+      is_hosted:
+        type: boolean
+      dns_bypass_address:
+        type: string
+
+  EnvironmentEngaged:
+    type: object
+    properties:
+      is_engaged:
+        type: boolean
+
+  ProxyConfiguration:
+    type: object
+    required:
+      - content
+    properties:
+      personality:
+        type: string
+        description: 'An identifier of the source system - used for making compatibility changes'
+      content:
+        type: string
+        description: 'The configuration'
+      message:
+        type: string
+        description: 'Message describing the configuration change'
+      features:
+        type: string
+        description: 'JSON blob containing features for this proxy'
+      generatedContent:
+        type: string
+        description: 'Content of the generated code'
+
+
+  ZoneCandidate:
+    type: object
+    properties:
+      zone_name:
+        type: string
+        description: 'Name of zone'
+      status:
+        type: string
+        description: 'Status of zone'
+
+  ZoneSummary:
+    type: object
+    properties:
+      zone_name:
+        type: string
+      name_servers:
+        type: array
+        items:
+          type: string
+
+  ZoneRecord:
+    type: object
+    properties:
+      name:
+        type: string
+      ttl:
+        type: integer
+        format: int32
+      record_type:
+        type: string
+      record_data:
+        type: array
+        items:
+          type:
+            - string
+            - object
+
+  ZoneDetail:
+    type: object
+    properties:
+      zone_name:
+        type: string
+      name_servers:
+        type: array
+        items:
+          type: string
+      records:
+        type: array
+        items:
+          $ref: '#/definitions/ZoneRecord'
+      environments:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: object
+            properties:
+              environment_id:
+                type: integer
+              environment_name:
+                type: string
+              application_id:
+                type: integer
+              application_name:
+                type: string
+
+  Origin:
+    type: object
+    properties:
+      hostname:
+        type: string
+        description: 'Hostname'
+      hostname_bare:
+        type: boolean
+        description: 'Hostname on a bare domain'
+      hostname_duplicate:
+        type: boolean
+        description: 'Hostname already exists on Section'
+      origin_detected:
+        type: boolean
+        description: 'Origin detected'
+      origin:
+        type: string
+        description: 'Detected origin endpoint'
+      origin_fixed:
+        type: boolean
+        description: 'Detected origin fixed endpoint'
+      origin_lookup:
+        type: string
+        description: 'Detected origin ip'
+      origin_multiple:
+        type: boolean
+        description: 'Origin multiple records'
+      origin_hint:
+        type: string
+        description: 'Origin hint found'
+      thirdparty_detected:
+        type: boolean
+        description: 'Thirdparty detected'
+      thirdparty_name:
+        type: string
+        description: 'Thirdparty name'
+      origin_app_name:
+        type: string
+        description: 'Detected application runnning on the origin'
+
+  BillingSummary:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        description: 'Billing enabled'
+      provisioning:
+        type: boolean
+        description: 'Billing provisioning'
+      user:
+        type: string
+        description: 'Billing linked to user'
+      meter_type:
+        type: string
+        description: 'Meter type for account'
+      outstanding_balance:
+        type: number
+        description: 'Account balance for period'
+      period_next:
+        type: string
+        description: 'Next billing period starts'
+      period_started:
+        type: string
+        description: 'Billing period started'
+      billing_portal:
+        type: string
+        description: 'Billing portal URL'
+      state:
+        type: string
+        description: 'Account status'
+
+  BillingHistory:
+    type: object
+    properties:
+      date:
+        type: string
+        description: 'Billing period (UTC)'
+      total_cost:
+        type: number
+        description: 'Total cost of bandwidth or pageview'
+      view_base:
+        type: number
+        description: 'Page views processed by Platform Routing Tier'
+      view_varnish:
+        type: number
+        description: 'Page views processed by Varnish'
+      view_modsecurity:
+        type: number
+        description: 'Page views processed by ModSecurity'
+      data_au:
+        type: number
+        description: 'Gigabytes processed through Australia'
+      data_us:
+        type: number
+        description: 'Gigabytes processed through North America'
+      data_eu:
+        type: number
+        description: 'Gigabytes processed through Europe'
+      data_varnish:
+        type: number
+        description: 'Gigabytes processed by Varnish'
+      data_modsecurity:
+        type: number
+        description: 'Gigabytes processed by ModSecurity'
+
+  UserResendVerificationResult:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+  AccountUserInviteRequest:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+      email:
+        type: string
+      phone_number:
+        type: string
+
+  AccountUserActionResult:
+    type: object
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+  AccountUserUpdateParams:
+    type: object
+    required:
+      - accountCapability
+    properties:
+      accountCapability:
+        type: string
+
+  AccountUserUpdateResult:
+    type: object
+    required:
+      - success
+      - message
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/AccountUser'
+
+  EnvironmentConfiguration:
+    type: object
+
+  PatchRequest:
+      type: array
+      items:
+        $ref: "#/definitions/RFC6902Operation"
+
+  RFC6902Operation:
+    type: object
+    description: A JSONPatch document as defined by RFC 6902
+    required:
+     - "op"
+     - "path"
+    properties:
+     op:
+      type: string
+      description: The operation to be performed
+      enum:
+       - "add"
+       - "remove"
+       - "replace"
+       - "move"
+       - "copy"
+       - "test"
+     path:
+      type: string
+      description: A JSON-Pointer
+     value:
+      type: object
+      description: The value to be used within the operations.
+     from:
+      type: string
+      description: A string containing a JSON Pointer value.
+
+  DomainSummary:
+    type: object
+    properties:
+      name:
+        type: string
+      zoneName:
+        type: string
+      cname:
+        type: string
+      mode:
+        type: string
+
+  SyntheticTest:
+    type: object
+    required:
+      - url
+    properties:
+      id:
+        type: integer
+      url:
+        type: string
+
+  Totp:
+    type: object
+    properties:
+      base32text:
+        type: string
+      svg:
+        type: string
+      url:
+        type: string
+      png_data_uri:
+        type: string
+
+  OutagePage:
+    type: object
+    properties:
+      name:
+        type: string
+      engaged:
+        type: boolean
+
+  EgressOrigin:
+    type: object
+    additionalProperties: false
+    required:
+      - address
+    properties:
+      address:
+        $ref: '#/definitions/host-address-dns-or-ip'
+      http_port:
+        type: integer
+        enum:
+          - 80
+          - 443
+          - 5080
+          - 5443
+          - 8080
+          - 8443
+      https_port:
+        type: integer
+        enum:
+          - 80
+          - 443
+          - 5080
+          - 5443
+          - 8080
+          - 8443
+      host_header:
+        $ref: '#/definitions/host-address-dns'
+      disable_keepalive:
+        type: boolean
+      keepalive_seconds:
+        type: integer
+        minimum: 1
+        maximum: 240
+        # 240s (4m) is the upper bound because Azure: https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#idletimeout
+      tls_name:
+        $ref: '#/definitions/host-address-dns'
+
+  EgressOrigins:
+    required:
+      - default
+    properties:
+      default:
+        $ref: '#/definitions/EgressOrigin'
+    additionalProperties:
+        $ref: '#/definitions/EgressOrigin'
+    # TODO: When supported by Swagger/OpenAPI, apply JSON Schema attributes
+    x-jsonschema-additionalProperties: false
+    x-jsonschema-patternProperties:
+      "^[_0-9A-Za-z-]{1,50}$": #/definitions/egress-origin-name
+        $ref: '#/definitions/EgressOrigin'
+
+  Egress:
+    type: object
+    additionalProperties: false
+    required:
+      - origins
+    properties:
+      remove_request_headers:
+        type: array
+        minItems: 1
+        maxItems: 50
+        items:
+          $ref: '#/definitions/http-header-field-name'
+      enable_sni:
+        type: boolean
+      upstream_response_timeout_seconds:
+        type: integer
+      verify_certificate:
+        type: boolean
+      proxy_acme_challenge:
+        type: boolean
+      origins:
+        $ref: '#/definitions/EgressOrigins'
+
+# HTTP Header Field Name:
+# https://tools.ietf.org/html/rfc7230#section-3.2
+# https://tools.ietf.org/html/rfc7230#section-3.2.6
+  http-header-field-name:
+    type: string
+    minLength: 1
+    maxLength: 256
+    pattern: ^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$
+
+# Relies upon allowance for numeric domain name for IP address
+  host-address-dns-or-ip:
+    type: string
+    minLength: 1
+    maxLength: 256
+    pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+
+# Doesn't attempt to enforce complex rules
+  host-address-dns:
+    type: string
+    minLength: 1
+    maxLength: 256
+    pattern: ^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+
+# egress-origin-name
+  egress-origin-name:
+    type: string
+    pattern: ^[_0-9A-Za-z]{1,50}$
+
+  IpRestrictions:
+    type: object
+    required:
+      - ip_blacklist
+    properties:
+      ip_blacklist:
+        type: array
+        items:
+          type: string
+          pattern: ^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2]\d|3[0-2]))?$

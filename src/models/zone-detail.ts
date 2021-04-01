@@ -22,13 +22,13 @@ export interface ZoneDetail {
      * @type {string}
      * @memberof ZoneDetail
      */
-    zoneName?: any;
+    zone_name?: any;
     /**
      * 
      * @type {Array&lt;string&gt;}
      * @memberof ZoneDetail
      */
-    nameServers?: any;
+    name_servers?: any;
     /**
      * 
      * @type {Array&lt;ZoneRecord&gt;}

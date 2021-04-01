@@ -28,17 +28,17 @@ export interface HttpsSetConfiguration {
      * @type {boolean}
      * @memberof HttpsSetConfiguration
      */
-    verifyOnly?: any;
+    verify_only?: any;
     /**
      * 
      * @type {string}
      * @memberof HttpsSetConfiguration
      */
-    publicCertificates?: any;
+    public_certificates?: any;
     /**
      * 
      * @type {string}
      * @memberof HttpsSetConfiguration
      */
-    privateKey?: any;
+    private_key?: any;
 }

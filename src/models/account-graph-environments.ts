@@ -28,5 +28,5 @@ export interface AccountGraphEnvironments {
      * @type {string}
      * @memberof AccountGraphEnvironments
      */
-    environmentName?: any;
+    environment_name?: any;
 }

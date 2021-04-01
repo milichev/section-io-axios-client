@@ -22,13 +22,13 @@ export interface AccountUserInviteRequest {
      * @type {string}
      * @memberof AccountUserInviteRequest
      */
-    firstName?: any;
+    first_name?: any;
     /**
      * 
      * @type {string}
      * @memberof AccountUserInviteRequest
      */
-    lastName?: any;
+    last_name?: any;
     /**
      * 
      * @type {string}
@@ -40,5 +40,5 @@ export interface AccountUserInviteRequest {
      * @type {string}
      * @memberof AccountUserInviteRequest
      */
-    phoneNumber?: any;
+    phone_number?: any;
 }

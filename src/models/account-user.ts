@@ -34,19 +34,19 @@ export interface AccountUser {
      * @type {string}
      * @memberof AccountUser
      */
-    firstName?: any;
+    first_name?: any;
     /**
      * 
      * @type {string}
      * @memberof AccountUser
      */
-    lastName?: any;
+    last_name?: any;
     /**
      * 
      * @type {string}
      * @memberof AccountUser
      */
-    phoneNumber?: any;
+    phone_number?: any;
     /**
      * 
      * @type {string}

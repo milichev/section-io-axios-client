@@ -40,5 +40,5 @@ export interface Totp {
      * @type {string}
      * @memberof Totp
      */
-    pngDataUri?: any;
+    png_data_uri?: any;
 }

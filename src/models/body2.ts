@@ -22,11 +22,11 @@ export interface Body2 {
      * @type {string}
      * @memberof Body2
      */
-    publicCertificates?: any;
+    public_certificates?: any;
     /**
      * 
      * @type {string}
      * @memberof Body2
      */
-    privateKey?: any;
+    private_key?: any;
 }

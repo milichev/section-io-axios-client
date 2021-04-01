@@ -22,5 +22,5 @@ export interface IpRestrictions {
      * @type {Array&lt;string&gt;}
      * @memberof IpRestrictions
      */
-    ipBlacklist: any;
+    ip_blacklist: any;
 }

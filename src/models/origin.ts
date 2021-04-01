@@ -28,19 +28,19 @@ export interface Origin {
      * @type {boolean}
      * @memberof Origin
      */
-    hostnameBare?: any;
+    hostname_bare?: any;
     /**
      * Hostname already exists on Section
      * @type {boolean}
      * @memberof Origin
      */
-    hostnameDuplicate?: any;
+    hostname_duplicate?: any;
     /**
      * Origin detected
      * @type {boolean}
      * @memberof Origin
      */
-    originDetected?: any;
+    origin_detected?: any;
     /**
      * Detected origin endpoint
      * @type {string}
@@ -52,41 +52,41 @@ export interface Origin {
      * @type {boolean}
      * @memberof Origin
      */
-    originFixed?: any;
+    origin_fixed?: any;
     /**
      * Detected origin ip
      * @type {string}
      * @memberof Origin
      */
-    originLookup?: any;
+    origin_lookup?: any;
     /**
      * Origin multiple records
      * @type {boolean}
      * @memberof Origin
      */
-    originMultiple?: any;
+    origin_multiple?: any;
     /**
      * Origin hint found
      * @type {string}
      * @memberof Origin
      */
-    originHint?: any;
+    origin_hint?: any;
     /**
      * Thirdparty detected
      * @type {boolean}
      * @memberof Origin
      */
-    thirdpartyDetected?: any;
+    thirdparty_detected?: any;
     /**
      * Thirdparty name
      * @type {string}
      * @memberof Origin
      */
-    thirdpartyName?: any;
+    thirdparty_name?: any;
     /**
      * Detected application runnning on the origin
      * @type {string}
      * @memberof Origin
      */
-    originAppName?: any;
+    origin_app_name?: any;
 }

@@ -22,31 +22,31 @@ export interface Egress {
      * @type {Array&lt;HttpHeaderFieldName&gt;}
      * @memberof Egress
      */
-    removeRequestHeaders?: any;
+    remove_request_headers?: any;
     /**
      * 
      * @type {boolean}
      * @memberof Egress
      */
-    enableSni?: any;
+    enable_sni?: any;
     /**
      * 
      * @type {number}
      * @memberof Egress
      */
-    upstreamResponseTimeoutSeconds?: any;
+    upstream_response_timeout_seconds?: any;
     /**
      * 
      * @type {boolean}
      * @memberof Egress
      */
-    verifyCertificate?: any;
+    verify_certificate?: any;
     /**
      * 
      * @type {boolean}
      * @memberof Egress
      */
-    proxyAcmeChallenge?: any;
+    proxy_acme_challenge?: any;
     /**
      * 
      * @type {EgressOrigins}

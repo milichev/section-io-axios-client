@@ -34,11 +34,11 @@ export interface ZoneRecord {
      * @type {string}
      * @memberof ZoneRecord
      */
-    recordType?: any;
+    record_type?: any;
     /**
      * 
      * @type {Array}
      * @memberof ZoneRecord
      */
-    recordData?: any;
+    record_data?: any;
 }

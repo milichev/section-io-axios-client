@@ -28,35 +28,35 @@ export interface EgressOrigin {
      * @type {number}
      * @memberof EgressOrigin
      */
-    httpPort?: any;
+    http_port?: any;
     /**
      * 
      * @type {number}
      * @memberof EgressOrigin
      */
-    httpsPort?: any;
+    https_port?: any;
     /**
      * 
      * @type {HostAddressDns}
      * @memberof EgressOrigin
      */
-    hostHeader?: any;
+    host_header?: any;
     /**
      * 
      * @type {boolean}
      * @memberof EgressOrigin
      */
-    disableKeepalive?: any;
+    disable_keepalive?: any;
     /**
      * 
      * @type {number}
      * @memberof EgressOrigin
      */
-    keepaliveSeconds?: any;
+    keepalive_seconds?: any;
     /**
      * 
      * @type {HostAddressDns}
      * @memberof EgressOrigin
      */
-    tlsName?: any;
+    tls_name?: any;
 }

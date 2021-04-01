@@ -34,13 +34,13 @@ export interface HttpsConfiguration {
      * @type {string}
      * @memberof HttpsConfiguration
      */
-    commonName?: any;
+    common_name?: any;
     /**
      * 
      * @type {Array&lt;string&gt;}
      * @memberof HttpsConfiguration
      */
-    alternateNames?: any;
+    alternate_names?: any;
     /**
      * 
      * @type {string}
@@ -64,11 +64,11 @@ export interface HttpsConfiguration {
      * @type {string}
      * @memberof HttpsConfiguration
      */
-    hpkpFingerprint?: any;
+    hpkp_fingerprint?: any;
     /**
      * 
      * @type {boolean}
      * @memberof HttpsConfiguration
      */
-    hostnameValid?: any;
+    hostname_valid?: any;
 }

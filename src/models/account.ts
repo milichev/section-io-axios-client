@@ -34,25 +34,25 @@ export interface Account {
      * @type {string}
      * @memberof Account
      */
-    accountName?: any;
+    account_name?: any;
     /**
      * does authenticated account have access to account
      * @type {boolean}
      * @memberof Account
      */
-    isAdmin?: any;
+    is_admin?: any;
     /**
      * owner user id
      * @type {number}
      * @memberof Account
      */
-    billingUser?: any;
+    billing_user?: any;
     /**
      * All users on this account must log in with 2FA
      * @type {boolean}
      * @memberof Account
      */
-    requires2fa?: any;
+    requires_2fa?: any;
     /**
      * 
      * @type {User}

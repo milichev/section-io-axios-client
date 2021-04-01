@@ -34,7 +34,7 @@ export interface EnvironmentSummary {
      * @type {string}
      * @memberof EnvironmentSummary
      */
-    environmentName?: any;
+    environment_name?: any;
     /**
      * 
      * @type {Array&lt;DomainSummary&gt;}
@@ -46,11 +46,11 @@ export interface EnvironmentSummary {
      * @type {boolean}
      * @memberof EnvironmentSummary
      */
-    isHosted?: any;
+    is_hosted?: any;
     /**
      * 
      * @type {string}
      * @memberof EnvironmentSummary
      */
-    dnsBypassAddress?: any;
+    dns_bypass_address?: any;
 }

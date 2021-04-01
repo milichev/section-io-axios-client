@@ -22,7 +22,7 @@ export interface DomainListInner {
      * @type {string}
      * @memberof DomainListInner
      */
-    domainName?: any;
+    domain_name?: any;
     /**
      * 
      * @type {boolean}

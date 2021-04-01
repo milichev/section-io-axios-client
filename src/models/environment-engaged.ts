@@ -22,5 +22,5 @@ export interface EnvironmentEngaged {
      * @type {boolean}
      * @memberof EnvironmentEngaged
      */
-    isEngaged?: any;
+    is_engaged?: any;
 }

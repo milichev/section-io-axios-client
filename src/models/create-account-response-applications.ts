@@ -34,5 +34,5 @@ export interface CreateAccountResponseApplications {
      * @type {string}
      * @memberof CreateAccountResponseApplications
      */
-    applicationName?: any;
+    application_name?: any;
 }

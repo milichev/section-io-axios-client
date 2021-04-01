@@ -34,5 +34,5 @@ export interface ApplicationSummary {
      * @type {string}
      * @memberof ApplicationSummary
      */
-    applicationName?: any;
+    application_name?: any;
 }

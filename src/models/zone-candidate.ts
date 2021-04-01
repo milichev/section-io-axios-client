@@ -22,7 +22,7 @@ export interface ZoneCandidate {
      * @type {string}
      * @memberof ZoneCandidate
      */
-    zoneName?: any;
+    zone_name?: any;
     /**
      * Status of zone
      * @type {string}

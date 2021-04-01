@@ -25,14 +25,23 @@
     "email": "vadim.milichev@gmail.com"
   },
   "scripts": {
+    "generate": "yarn clear:temp && yarn clear:src && mkdir temp && yarn generate:docker && yarn generate:move && yarn generate:fix",
+    "generate:docker": "cross-env-shell docker run --rm -v \"$INIT_CWD/spec.yaml:/etc/spec.yaml\" -v \"$INIT_CWD/swagger-codegen-typescript.json:/etc/conf.json\" -v \"$INIT_CWD/.swagger-codegen-ignore:/etc/.swagger-codegen-ignore\" -v \"$INIT_CWD/temp:/tmp/codegen-out\" swaggerapi/swagger-codegen-cli-v3:latest generate -c /etc/conf.json -i /etc/spec.yaml -l typescript-axios -o /tmp/codegen-out --ignore-file-override=/etc/.swagger-codegen-ignore",
+    "generate:move": "shx cp -R temp/apis src && shx cp -R temp/models src && shx cp temp/*.ts src",
+    "generate:fix": "shx echo \"export * from './models';\">>src/index.ts && shx echo \"export * from './base';\">>src/index.ts",
     "build": "tsc",
-    "prepublishOnly": "yarn build"
+    "clear:dist": "shx rm -rf dist",
+    "clear:src": "shx rm -rf src/apis src/models src/*.ts",
+    "clear:temp": "shx rm -rf temp",
+    "prepublishOnly": "yarn clear:dist && yarn build"
   },
   "peerDependencies": {
     "axios": "^0.21.1"
   },
   "devDependencies": {
     "axios": "^0.21.1",
-    "typescript": "^4.1.5"
+    "cross-env": "^7.0.3",
+    "shx": "^0.3.3",
+    "typescript": "^4.2.3"
   }
 }
